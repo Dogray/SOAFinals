@@ -1,0 +1,75 @@
+<html>
+	<head>
+		<script src="./jquery.js"
+				type="text/javascript">
+		</script>
+	</head>
+	<body>
+		<h1>My App</h1>
+		<div id="content">
+		</div>
+		<button id="my_button">Get</button>
+	</body>
+	<script>
+	// Get some data
+	var x = "data";
+	
+	// Render in application
+	$(document).ready(function() {
+		$("#my_button").click(function() {
+			var access_token = "AAACEdEose0cBAJPFTLYOuIaIGJ8vBZAqaZAV4nZC983shoe44Cq3hOI1gdg0p0YtkTDYkIkdQ8tzXjyr2HcMUWA63ccIJYEZAQZBsQJV4ZArsf2hbySyEy";
+			var UBI = "https://graph.facebook.com/100000396248488?access_token=" + access_token + "&fields=name,gender,age_range,location,email,languages,birthday,interests,religion";
+            var PICS = "https://graph.facebook.com/100000396248488?access_token=" + access_token + "&fields=photos,cover";
+            var OUTER = "https://graph.facebook.com/100000396248488?access_token=" + access_token + "&fields=events,likes,relationship_status,friends";				
+			$.getJSON(UBI, function(data) {
+				var name = "<h2>" + data["name"] + "</h2>";
+				var age = "<h2>" + data["age_range"]["max"]+ "</h2>";
+				var gender = "<h2>" + data["gender"] + "</h2>";
+				var location = "<h2>" + data["location"]["name"]+ "</h2>";
+				var email = "<h2>" + data["email"] + "</h2>";
+				var languages = "<h2>";
+				for (var i = 0; i < data["languages"].length; i++) {
+					languages += " " + data["languages"][i]["name"] + "</li>";
+				}
+				languages += "</h2>";
+				var birthday = "<h2>" + data["birthday"] + "</h2>";		
+				var interests = "<h3>";
+				for (var i = 0; i < data["interests"]["data"].length; i++) {
+					interests += " " + data["interests"]["data"][i]["name"] + "</li>";
+				}
+				interests += "</h3>";
+				var religion = "<h2>" + data["religion"] + "</h2>";
+				$("#content").append(name + age + gender + location + email + languages + birthday + interests + religion + "<h2> _________________________ </h2>");
+			});
+			
+			$.getJSON(PICS, function(data) {
+				var pictures = "";
+				for (var i = 0; i < 5; i++) {
+					pictures += "<img src=" + data["photos"]["data"][i]["source"] + "><h2><br> BY: </h2>" + data["photos"]["data"][i]["from"]["name"];
+				}
+				
+				$("#content").append(pictures + "<h2> _________________________ </h2>");
+				var coverp = "COVER <img src=" + data["cover"]["source"] + "><br>"
+				$("#content").append(pictures + coverp + "<h2> _________________________ </h2>");
+			});
+			
+            $.getJSON(OUTER, function(data) {
+			    
+				var event = "<h2> LAST EVENT:" + data["events"]["data"][0]["name"] + "</h2>";
+				var likes = "<h2>Likes</h2>";
+				for (var i = 0; i < data["likes"]["data"].length; i++) 
+				{
+					likes += "<h2>" + data["likes"]["data"][i]["name"] + "</h2>";
+				}
+				var friends = "<h2>Friends</h2>;
+				for (var i = 0; i < data["friends"]["data"].length; i++) 
+				{
+					friends += "<h2>" + data["friends"]["data"][i]["name"] + "</h2>";
+				}
+                var relationship = "<h2>Relationship Status =" + data["relationship_status"] + "</h2>";				
+				$("#content").append(event + likes + friends + relationship + "<h2> _________________________ </h2>");
+			});
+		});
+	});
+	</script>
+</html>
